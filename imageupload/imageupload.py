@@ -1,9 +1,13 @@
 import os
-from flask import Flask, flash, request, redirect, url_for, render_template
+from flask import Flask, flash, request, redirect, url_for, render_template, json, session
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
+from DiseaseClassification import *
+import shutil
+import glob
 
-UPLOAD_FOLDER = 'uploads/'
+
+UPLOAD_FOLDER = 'imagedata/result'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
@@ -31,8 +35,12 @@ def uploadajax():
 			return redirect(request.url)
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
+			files = glob.glob(str(app.config['UPLOAD_FOLDER'])+'/*')
+			for f in files:
+				os.remove(f)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			
+			classValue = predictValue()
+			print(classValue)
 			return json.dumps({'status':2})
 
 
