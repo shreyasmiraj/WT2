@@ -100,6 +100,9 @@ def predictValue():
         if maxprobability == op[0][i]:
             maxprobabilityclass = i
             break
+
     K.clear_session()
     del model
+    if maxprobability < 0.5:
+        return str("image is not discernible")
     return str(classList[maxprobabilityclass])
