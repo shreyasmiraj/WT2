@@ -51,6 +51,9 @@ def adduser():
             'password':password
         }
         session['logged_in'] = True
+        session['user_name'] = user['name']
+        session['email'] = user['email']
+        session['location'] = user['location']
         user=mongo.db.users.find_one(query)
         user['_id']=str(user['_id'])
     return render_template('dashboard.html')
@@ -71,7 +74,8 @@ def auth_user():
         user['_id']=str(user['_id'])
         session['logged_in'] = True
         session['user_name'] = user['name']
-        session['user_id'] = user['_id']
+        session['email'] = user['email']
+        session['location'] = user['location']
 
         return render_template('dashboard.html')
         return jsonify({'user_id':user['_id'],'uname':user['name'],'result':'Success'})
@@ -90,19 +94,59 @@ def signup():
 
 @app.route('/dash_render')
 def dashboard():
-    return render_template('dashboard.html')
+    if(session['logged_in']):
+        return render_template('dashboard.html')
+    else:
+        login()
+        return render_template('consult.html')
+
 
 @app.route('/user_render')
 def user():
-    return render_template('user.html')
+    if(session['logged_in']):
+        name = session['user_name']
+        location = session['location']
+        email = session['email']
+        return render_template('user.html',name=name,location=location,email=email)
+    else:
+        login()
 
 @app.route('/rss_render')
 def rss():
-    return render_template('rss.html')
+    if(session['logged_in']):
+        return render_template('rss.html')
+    else:
+        login()
 
 @app.route('/consult_render')
 def consult():
     return render_template('consult.html')
+
+@app.route('/logout')
+def logout():
+    del session['logged_in']
+    del session['email']
+    del session['name']
+    del session['location']
+    login()
+    return render_template('consult.html')
+
+
+@app.route('/update',methods =['POST'])
+def update():
+    print("hello")
+    email = session['email']
+    name =request.form['name']
+    location =request.form['location']
+#    print(location)
+    mongo.db.users.update_one({'email':email},{'$set':{'name':name}})
+    mongo.db.users.update_one({'email':email},{'$set':{'location':location}})
+    user = mongo.db.users.find_one({'email':email})
+    name = user['name']
+    location = user['location']
+
+    return render_template('user.html',name=name,location=location,email=email)
+
 
 def allowed_file(filename):
 	return '.' in filename and \
