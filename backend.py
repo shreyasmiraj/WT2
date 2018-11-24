@@ -51,7 +51,7 @@ def adduser():
             'password':password
         }
         session['logged_in'] = True
-        session['user_name'] = user['name']
+        session['name'] = user['name']
         session['email'] = user['email']
         session['location'] = user['location']
         user=mongo.db.users.find_one(query)
@@ -73,7 +73,7 @@ def auth_user():
     if user:
         user['_id']=str(user['_id'])
         session['logged_in'] = True
-        session['user_name'] = user['name']
+        session['name'] = user['name']
         session['email'] = user['email']
         session['location'] = user['location']
 
@@ -98,13 +98,13 @@ def dashboard():
         return render_template('dashboard.html')
     else:
         login()
-        return render_template('consult.html')
+        return render_template('login.html')
 
 
 @app.route('/user_render')
 def user():
     if(session['logged_in']):
-        name = session['user_name']
+        name = session['name']
         location = session['location']
         email = session['email']
         return render_template('user.html',name=name,location=location,email=email)
@@ -116,11 +116,14 @@ def rss():
     if(session['logged_in']):
         return render_template('rss.html')
     else:
-        login()
+        return render_template('login.html')
 
 @app.route('/consult_render')
 def consult():
-    return render_template('consult.html')
+    if(session['logged_in']):
+        return render_template('consult.html')
+    else:
+        return render_template('login.html')
 
 @app.route('/logout')
 def logout():
@@ -128,8 +131,7 @@ def logout():
     del session['email']
     del session['name']
     del session['location']
-    login()
-    return render_template('consult.html')
+    return render_template('login.html')
 
 
 @app.route('/update',methods =['POST'])
