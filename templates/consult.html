@@ -171,60 +171,40 @@
                 </div>
             </div>
         </nav>
-
         <div class="content">
             <div class="container-fluid">
-							<div id = "upload-image-div" style = "display:{{div1status}}">
+							<div id = "upload-image-div" class="card" style = "display:{{div1status}} !important">
 
 								<form id="upload-file" method="post" enctype="multipart/form-data">
 								    <fieldset>
-								        <label for="file">Select a file</label>
-								        <input name="file" type="file">
+								        <label><h3>Select a file</h3></label>
+								    <div class="form-group">
+                                        <input name="file" type="file" >
+                                    </div>
 								    </fieldset>
 								    <fieldset>
-								        <button id="upload-file-btn" type="button">Upload</button>
+                                    <div class="form-group">
+								        <button id="upload-file-btn" class="btn btn-info btn-fill" type="button">Upload</button>
+                                    </div>
 								    </fieldset>
 								</form>
 							</div>
 
-							<div id = "result-image-div" style = "display:{{div2status}}">
-								<p><span id="classValue"> {{classValue}} </span></p>
-								<button id="upload-more-btn" type="button">Upload</button>
+							<div id = "result-image-div" style = "display:{{div2status}} !important">
+                            <div class="form-group">
+
+								<h1><span id="classValue"> {{classValue}} </span></h1>
+								<button id="upload-more-btn class="btn btn-info btn-fill pull-right"" type="button">Upload another one</button>
 							</div>
+                            <div class="form-group">
+
 						</div>
         </div>
 
-        <footer class="footer">
-            <div class="container-fluid">
-                <nav class="pull-left">
-                    <ul>
-                        <li>
-                            <a href="#">
-                                Home
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                Company
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                Portfolio
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                               Blog
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <p class="copyright pull-right">
-                    &copy; <script>document.write(new Date().getFullYear())</script> <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
-                </p>
-            </div>
-        </footer>
+
+    </div>
+</div>
+
 
 
     </div>
