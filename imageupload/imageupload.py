@@ -1,11 +1,10 @@
 import os
-from flask import Flask, flash, request, redirect, url_for, render_template, json, session
+from flask import Flask, flash, request, redirect, url_for, render_template, json, session,jsonify
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
 from DiseaseClassification import *
 import shutil
 import glob
-
 
 UPLOAD_FOLDER = 'imagedata/result'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -41,12 +40,17 @@ def uploadajax():
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 			classValue = predictValue()
 			print(classValue)
-			return json.dumps({'status':2})
+			session['classValue'] = classValue
+			params = {'classValue' : classValue, 'div1status' : 'none', 'div2status' : 'block'}
+			return jsonify(params)
 
 
 @app.route('/', methods=['GET', 'POST'])
-def index():
-	return render_template("upload.html")
+def uploadForm():
+	classValue = 'NA'
+	if 'classValue' in session:
+		classValue = session['classValue']
+	return render_template("upload.html", classValue = classValue, div1status="block", div2status="none")
 
 
 @app.route('/uploads/<filename>')
@@ -56,4 +60,5 @@ def uploaded_file(filename):
 
 
 if __name__ == '__main__':
-	app.run(debug="true")
+	app.secret_key = 'super secret key'
+	app.run(debug="true", threaded=True)
